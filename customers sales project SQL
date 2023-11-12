@@ -40,7 +40,7 @@ LEFT JOIN BIT_DB.customers as cust
 On feb.orderid = cust.order_id
 WHERE length (orderid) = 6
 AND orderid <> "Order ID"
-AND feb.quantity >2
+AND feb.quantity >2;
 
 
 
