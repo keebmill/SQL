@@ -1,0 +1,51 @@
+SELECT * FROM BIT_DB.JanSales;
+
+SELECT count(orderid) FROM BIT_DB.JanSales
+WHERE length (orderid) = 6
+AND orderid <> "Order ID";
+
+SELECT count(*) FROM BIT_DB.JanSales
+WHERE length (orderid) = 6
+AND orderid <> "Order ID"
+AND product = "iPhone";
+
+SELECT acctnum FROM BIT_DB.customers
+INNER JOIN BIT_DB.FebSales
+ON BIT_DB.customers.order_id = BIT_DB.FebSales.orderID
+WHERE length (orderid) = 6
+AND orderid <> "Order ID"
+AND product = "iPhone";
+
+SELECT min(price), product FROM BIT_DB.JanSales
+WHERE length (orderid) = 6
+AND orderid <> "Order ID";
+
+SELECT product, price, SUM(quantity)* price AS revenue 
+FROM BIT_DB.JanSales
+WHERE length (orderid) = 6
+AND orderid <> "Order ID"
+GROUP BY product;
+
+SELECT product, SUM(quantity), SUM (quantity) * price  as revenue 
+FROM BIT_DB.FebSales
+WHERE length (orderid) = 6
+AND orderid <> "Order ID"
+AND location = "548 Lincoln St, Seattle, WA 98101"
+GROUP BY product;
+
+
+SELECT count(cust.acctnum), avg(quantity * price) as amount_spent
+FROM BIT_DB.FebSales as Feb
+LEFT JOIN BIT_DB.customers as cust
+On feb.orderid = cust.order_id
+WHERE length (orderid) = 6
+AND orderid <> "Order ID"
+AND feb.quantity >2
+
+
+
+
+
+
+
+
