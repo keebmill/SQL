@@ -1,0 +1,108 @@
+/*First, I used these queries to view all of my tables and find relavant questions using the data *\
+
+SELECT* FROM chinook.albums;
+
+SELECT* FROM chinook.artists;
+
+SELECT* FROM chinook.customers;
+
+SELECT* FROM chinook.employees;
+
+SELECT* FROM chinook.genres;
+
+SELECT* FROM chinook.invoice_items;
+
+SELECT* FROM chinook.invoices;
+
+SELECT* FROM chinook.media_types;
+
+SELECT* FROM chinook.playlist_track;
+
+SELECT* FROM chinook.playlists;
+
+SELECT* FROM chinook.tracks;
+
+/* 1. Who is the artist respnsible for the album titled "Bongo Fury"? *\
+
+SELECT title, name FROM chinook.albums
+LEFT JOIN chinook.artists
+ON chinook.albums.artistid= chinook.artists.artistid
+WHERE title = "Bongo Fury";
+
+/* 2. What is the most popular country amongst our customer base? *\;
+
+WITH max_country AS (
+    SELECT country, COUNT(country) AS popular_countries
+    FROM chinook.customers
+    GROUP BY country
+)
+
+SELECT country
+FROM max_country
+WHERE popular_countries = (SELECT MAX(popular_countries) FROM max_country);
+
+
+/* 3. Who are all the employees that work in IT? *\
+
+SELECT LastName, FirstName, Title FROM chinook.employees
+WHERE Title like "IT%";
+
+/* 4. How many invoices were there in 2011? *\
+
+SELECT COUNT(invoicedate) FROM chinook.invoices
+WHERE invoicedate like "2011%"
+
+/* 5. Find all invoices of customers in Germany( names, invoiceID, dates, billing country) *\
+
+SELECT firstName, invoiceId, invoiceDate, billingCountry FROM chinook.invoices
+JOIN chinook.customers
+ON chinook.customers.customerId = chinook.invoices.customerId
+WHERE country = "Germany";
+
+/* 6. Show the # of tracks for each genre in descending order (genreID, genre, # of tracks) *\
+
+SELECT COUNT(chinook.tracks.trackid) AS track_count, chinook.genres.name
+FROM chinook.tracks
+JOIN chinook.genres ON chinook.tracks.genreid = chinook.genres.genreid
+GROUP BY chinook.genres.name
+ORDER BY chinook.genres.name;
+
+
+/* 7. Which sales agent made the most in sales in 2011? *\
+
+SElECT emp.firstname, ROUND(SUM(inv.total),2) AS total_sales FROM chinook.employees emp
+
+JOIN chinook.customers cust
+ON emp.employeeId = cust.supportRepId
+
+JOIN chinook.invoices inv
+ON inv.customerid = cust.customerId
+
+WHERE emp.title = "Sales Support Agent"
+AND invoicedate like "2011%"
+GROUP BY emp.firstname;
+
+/* 8. Show the invoice total, customer name, country, and sales agent *\
+
+SELECT cust.firstName, country, emp.firstName AS agent, SUM(inv.total)AS total_spent FROM chinook.customers cust
+
+JOIN chinook.invoices inv
+ON inv.customerId = cust.customerId
+
+JOIN chinook.employees emp
+ON emp.employeeId = cust.supportRepId
+
+WHERE emp.title = "Sales Support Agent"
+GROUP BY cust.firstname
+ORDER BY total_spent desc;
+
+
+/* 9. What are our top 4 playlist types? ( name, # of trackID's)
+
+SELECT play.name AS playlist_genre, COUNT(play_track.trackId) AS num_tracks FROM chinook.playlist_track play_track
+
+JOIN chinook.playlists play
+ON play_track.playlistId = play.playlistId
+
+GROUP BY play.name
+ORDER BY num_tracks desc;
